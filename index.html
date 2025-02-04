@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Valores Diários</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Registro de Valores Diários</h1>
+        <input type="number" id="valorInput" placeholder="Digite um valor">
+        <button onclick="registrarValor()">Registrar Valor</button>
+        <button onclick="resetarValores()">Resetar Valores</button>
+        <button onclick="deletarBancoDeDados()">Deletar Banco de Dados</button>
+        <p id="totalDisplay">Total: 0</p>
+        <p id="totalDisplay">Maximo: 81000</p>
+        <div class="barra-container">
+            <div id="barraProgresso" class="barra-progresso"></div>
+        </div>
+        <ul id="listaValores"></ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
