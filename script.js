@@ -6,6 +6,7 @@ request.onupgradeneeded = function(event) {
     db = event.target.result;
     const objectStore = db.createObjectStore('valores', { autoIncrement: true });
     objectStore.createIndex('valor', 'valor', { unique: false });
+    objectStore.createIndex('data', 'data', { unique: false });
 };
 
 request.onsuccess = function(event) {
@@ -13,22 +14,34 @@ request.onsuccess = function(event) {
     atualizarDisplay();
 };
 
-function formatarMoeda(input) {
-    let valor = input.value.replace(/\D/g, ''); // Remove tudo que não for número
-    valor = (parseFloat(valor) / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    input.value = valor;
-}
+// Formata o input para moeda brasileira (R$)
+document.getElementById('valorInput').addEventListener('input', function (e) {
+    let valor = e.target.value.replace(/\D/g, ''); // Remove tudo que não for número
+    valor = (valor / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    e.target.value = valor;
+});
 
 function registrarValor() {
     const valorInput = document.getElementById('valorInput');
-    const valor = parseFloat(valorInput.value.replace(/\D/g, '')) / 100; // Converte para número
-    
-    if (!isNaN(valor)) {
+    const dataInput = document.getElementById('dataInput');
+
+    const valor = parseFloat(valorInput.value.replace(/[R$\s.]/g, '').replace(',', '.')); // Converte para número
+    let data = dataInput.value;
+
+    if (!data) {
+        const hoje = new Date();
+        data = hoje.toISOString().split('T')[0]; // Pega a data atual no formato YYYY-MM-DD
+    }
+
+    if (!isNaN(valor) && data) {
         const transaction = db.transaction(['valores'], 'readwrite');
         const objectStore = transaction.objectStore('valores');
-        objectStore.add({ valor: valor });
+        
+        objectStore.add({ valor, data });
 
         valorInput.value = '';
+        dataInput.value = '';
+
         transaction.oncomplete = function() {
             atualizarDisplay();
         };
@@ -49,20 +62,32 @@ function atualizarDisplay() {
         // Formata o total para reais
         totalDisplay.textContent = `Total: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
 
+        // Verifica se o total está a 10 mil do limite e exibe um alerta
+        if (total >= (limite - 10000) && total < limite) {
+            alert("Aviso: Você está a R$10.000 de atingir o limite!");
+        }
+
         atualizarBarraProgresso(total);
         atualizarLista(valores);
     };
 }
+
 
 function atualizarBarraProgresso(total) {
     const barraProgresso = document.getElementById('barraProgresso');
     const progresso = (total / limite) * 100;
     barraProgresso.style.width = `${progresso}%`;
 
-    if (total >= limite) {
-        barraProgresso.style.backgroundColor = '#ff6347'; // Muda a cor da barra quando o limite é atingido
+    // Define a cor conforme o progresso
+    if (progresso < 50) {
+        barraProgresso.style.backgroundColor = '#0077ff'; // Azul
+    } else if (progresso >= 50 && progresso < 80) {
+        barraProgresso.style.backgroundColor = '#FFA500'; // Laranja
+    } else {
+        barraProgresso.style.backgroundColor = '#ff6347'; // Vermelho
     }
 }
+
 
 function atualizarLista(valores) {
     const listaValores = document.getElementById('listaValores');
@@ -70,49 +95,42 @@ function atualizarLista(valores) {
 
     valores.forEach((item, index) => {
         const li = document.createElement('li');
-
-        // Formata cada valor para reais
-        li.textContent = `${index + 1} | ${item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+        const dataFormatada = new Date(item.data).toLocaleDateString('pt-BR');
+        li.textContent = `${index + 1} | ${dataFormatada} | ${item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
         listaValores.appendChild(li);
     });
-}
-
-function resetarValores() {
-    const transaction = db.transaction(['valores'], 'readwrite');
-    const objectStore = transaction.objectStore('valores');
-    const request = objectStore.clear();
-
-    request.onsuccess = function() {
-        console.log('Todos os valores foram removidos.');
-        atualizarDisplay();
-    };
-}
-
-function deletarBancoDeDados() {
-    const request = indexedDB.deleteDatabase('valoresDB');
-
-    request.onsuccess = function() {
-        console.log('Banco de dados deletado com sucesso.');
-        atualizarDisplay();
-    };
-
-    request.onerror = function(event) {
-        console.error('Erro ao deletar o banco de dados:', event.target.errorCode);
-    };
 }
 
 function removerUltimoValor() {
     const transaction = db.transaction(['valores'], 'readwrite');
     const objectStore = transaction.objectStore('valores');
-    const request = objectStore.openCursor(null, 'prev'); // Pega o último item
+    const request = objectStore.openCursor(null, 'prev'); // Abre o cursor para iterar de trás pra frente
 
     request.onsuccess = function(event) {
         const cursor = event.target.result;
         if (cursor) {
-            objectStore.delete(cursor.primaryKey); // Remove apenas o último valor armazenado
+            // Se houver um cursor, pega o último valor inserido
+            objectStore.delete(cursor.primaryKey); // Deleta o item com o cursor
+
             transaction.oncomplete = function() {
-                atualizarDisplay();
+                atualizarDisplay(); // Atualiza a lista após remoção
             };
         }
+    };
+}
+
+
+
+function resetarValores() {
+    const transaction = db.transaction(['valores'], 'readwrite');
+    const objectStore = transaction.objectStore('valores');
+    objectStore.clear().onsuccess = function() {
+        atualizarDisplay();
+    };
+}
+
+function deletarBancoDeDados() {
+    indexedDB.deleteDatabase('valoresDB').onsuccess = function() {
+        atualizarDisplay();
     };
 }

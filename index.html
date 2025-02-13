@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Valores Diários</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png"> <!-- Ícone do site -->
 </head>
 <body>
     <div class="container">
         <h1>Registrar Notas</h1>
-        <input type="text" id="valorInput" placeholder="Digite um valor" oninput="formatarMoeda(this)">
+        <input type="text" id="valorInput" placeholder="Digite um valor">
+        <input type="date" id="dataInput">
         <button onclick="registrarValor()" class="principal">Registrar Valor</button>
         <button onclick="removerUltimoValor()" class="principal">Remover Último Valor</button>
         
-        <p id="totalDisplay">Total: 0</p>
-        <p id="totalDisplay">Máximo: 81000</p>
+        <p id="totalDisplay">Total: R$ 0,00</p>
+        <p>Máximo: R$ 81.000,00</p>
+        
         <div class="barra-container">
             <div id="barraProgresso" class="barra-progresso"></div>
         </div>
+
         <ul id="listaValores"></ul>
+        
         <p>Área de Exclusão</p>
         <button onclick="resetarValores()" class="pequeno">Resetar Valores</button>
         <button onclick="deletarBancoDeDados()" class="pequeno">Deletar Banco de Dados</button>

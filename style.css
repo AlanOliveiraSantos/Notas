@@ -14,14 +14,16 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    height: 100%;
+    width: 100%;
+    max-width: 400px;
 }
 
-input[type="text"] {
+input {
     padding: 10px;
     margin: 10px 0;
     width: calc(100% - 22px);
     font-size: 16px;
+    text-align: left;
 }
 
 button.principal {
@@ -37,20 +39,21 @@ button.principal {
 
 button.pequeno {
     padding: 5px 10px;
-    color: rgb(255, 255, 255);
+    color: white;
     background-color: brown;
     border: none;
     border-radius: 5px;
 }
 
-button.principal:active {
-    background-color: #001a8f; /* Cor temporária quando o botão é pressionado */
+button:active {
+    background-color: #001a8f; /* Muda temporariamente ao clicar */
 }
 
 p {
     font-size: 17px;
     font-weight: bold;
 }
+
 ul {
     list-style-type: none;
     margin: 10px 0;
@@ -60,16 +63,16 @@ ul {
 
 ul li {
     display: flex;
-    justify-content: space-between; /* Alinha os itens */
+    justify-content: space-between;
     padding: 8px 12px;
-    border-bottom: 1px solid #ddd; /* Linha para separar os itens */
-    font-size: 16px;
-    font-weight:bolder;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
 }
 
 ul li:last-child {
-    border-bottom: none; /* Remove a borda do último item */
+    border-bottom: none;
 }
+
 .barra-container {
     width: 100%;
     background-color: #e0e0e0;
