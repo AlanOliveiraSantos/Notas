@@ -169,15 +169,24 @@ function removerUltimoValor() {
 
 
 function resetarValores() {
-    const transaction = db.transaction(['valores'], 'readwrite');
-    const objectStore = transaction.objectStore('valores');
-    objectStore.clear().onsuccess = function() {
-        atualizarDisplay();
-    };
+    const confirmarReset = confirm("Você tem certeza que deseja resetar todos os valores?");
+    if (confirmarReset) {
+        const transaction = db.transaction(['valores'], 'readwrite');
+        const objectStore = transaction.objectStore('valores');
+        objectStore.clear().onsuccess = function() {
+            atualizarDisplay();
+            alert("Todos os valores foram resetados.");
+        };
+    }
 }
 
 function deletarBancoDeDados() {
-    indexedDB.deleteDatabase('valoresDB').onsuccess = function() {
-        atualizarDisplay();
-    };
+    const confirmarDeletar = confirm("Você tem certeza que deseja deletar o banco de dados? Esta ação não pode ser desfeita.");
+    if (confirmarDeletar) {
+        indexedDB.deleteDatabase('valoresDB').onsuccess = function() {
+            alert("Banco de dados deletado com sucesso.");
+            atualizarDisplay();
+        };
+    }
 }
+

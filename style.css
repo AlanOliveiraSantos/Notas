@@ -14,7 +14,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 100%;
-    max-width: 400px;
+    max-width: 1000px;
     height: 100%;
 }
 
@@ -58,13 +58,13 @@ ul {
     list-style-type: none;
     margin: 10px 0;
     padding: 0;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 ul li {
     display: flex;
     justify-content: space-between;
-    padding: 8px 12px;
+    padding: 10px 12px;
     border-bottom: 1px solid #ddd;
     font-weight: bold;
 }
