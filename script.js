@@ -100,15 +100,17 @@ function atualizarDisplay() {
         // Formata o total para reais
         totalDisplay.textContent = `Total: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
 
-        // Verifica se o total está a 10 mil do limite e exibe um alerta
-        if (total >= (limite - 10000) && total < limite) {
-            alert("Aviso: Você está a R$10.000 de atingir o limite!");
+        // Calcula o valor que falta para o limite
+        const faltando = limite - total;
+        if (faltando <= 10000 && faltando > 0) {
+            alert(`Aviso: Faltam apenas ${faltando.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} para atingir o limite de R$ 81.000!`);
         }
 
         atualizarBarraProgresso(total);
         atualizarLista(valores);
     };
 }
+
 
 
 function atualizarBarraProgresso(total) {
