@@ -29,9 +29,10 @@ input {
 button.principal {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #00c882;
-    color: #000000;
+    background-color: #009963;
+    color: #ffffff;
     border: none;
+    font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
     margin: 5px;

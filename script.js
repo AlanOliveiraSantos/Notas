@@ -133,21 +133,22 @@ function atualizarLista(valores) {
     const listaValores = document.getElementById('listaValores');
     listaValores.innerHTML = ''; // Limpa a lista antes de adicionar os novos itens
 
-    // Não inverter a lista, apenas numerar de forma crescente
     valores.forEach((item, index) => {
         const li = document.createElement('li');
 
         // Formata o valor para reais
         const valorFormatado = item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-        // Formata a data para o formato BR (DD/MM/YYYY)
-        const dataFormatada = new Date(item.data).toLocaleDateString('pt-BR');
+        // Corrige o problema da data reduzindo um dia
+        const partesData = item.data.split('-'); // Divide o formato YYYY-MM-DD
+        const dataFormatada = `${partesData[2]}/${partesData[1]}/${partesData[0]}`; // Formata para DD/MM/YYYY
 
         // Adiciona a numeração de forma crescente
         li.textContent = `${index + 1} | ${valorFormatado} | ${dataFormatada}`;
         listaValores.appendChild(li);
     });
 }
+
 
 
 
