@@ -16,38 +16,41 @@ request.onsuccess = function(event) {
 
 // Formata o input para moeda brasileira (R$)
 document.getElementById('valorInput').addEventListener('input', function (e) {
-    let valor = e.target.value.replace(/\D/g, ''); // Remove tudo que não for número
-    valor = (valor / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    e.target.value = valor;
+    // Remove qualquer coisa que não seja número ou vírgula
+    let valor = e.target.value.replace(/\D/g, '');
+    
+    // Converte para número e formata para moeda (R$)
+    if (valor) {
+        valor = (valor / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        e.target.value = valor; // Exibe o valor no formato moeda
+    }
 });
 
 function registrarValor() {
     const valorInput = document.getElementById('valorInput');
     const dataInput = document.getElementById('dataInput');
+    
+    // Remove qualquer coisa não numérica e transforma em valor numérico
+    const valor = parseFloat(valorInput.value.replace(/\D/g, '')) / 100; // Divide por 100 para obter o valor correto
+    const data = dataInput.value; // Obtém o valor da data no formato YYYY-MM-DD
 
-    const valor = parseFloat(valorInput.value.replace(/[R$\s.]/g, '').replace(',', '.')); // Converte para número
-    let data = dataInput.value;
-
-    if (!data) {
-        const hoje = new Date();
-        data = hoje.toISOString().split('T')[0]; // Pega a data atual no formato YYYY-MM-DD
-    }
-
-    if (!isNaN(valor) && data) {
+    // Verificar se o valor é um número válido e se a data não está vazia
+    if (!isNaN(valor) && data !== "") {
         const transaction = db.transaction(['valores'], 'readwrite');
         const objectStore = transaction.objectStore('valores');
-        
-        objectStore.add({ valor, data });
+        objectStore.add({ valor: valor, data: data });
 
+        // Limpa os campos após o envio
         valorInput.value = '';
         dataInput.value = '';
 
         transaction.oncomplete = function() {
             atualizarDisplay();
         };
+    } else {
+        alert("Por favor, insira um valor válido e uma data.");
     }
 }
-
 
 function atualizarDisplay() {
     const transaction = db.transaction(['valores'], 'readonly');
@@ -95,11 +98,18 @@ function atualizarLista(valores) {
 
     valores.forEach((item, index) => {
         const li = document.createElement('li');
+
+        // Formata o valor para reais
+        const valorFormatado = item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        // Formata a data para o formato BR (DD/MM/YYYY)
         const dataFormatada = new Date(item.data).toLocaleDateString('pt-BR');
-        li.textContent = `${index + 1} | ${dataFormatada} | ${item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+
+        li.textContent = `${index + 1} | ${valorFormatado} | ${dataFormatada}`;
         listaValores.appendChild(li);
     });
 }
+
 
 function removerUltimoValor() {
     const transaction = db.transaction(['valores'], 'readwrite');
