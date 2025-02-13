@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>Registrar Notas</h1>
-        <input type="number" id="valorInput" placeholder="Digite um valor">
+        <input type="text" id="valorInput" placeholder="Digite um valor" oninput="formatarMoeda(this)">
         <button onclick="registrarValor()" class="principal">Registrar Valor</button>
         <button onclick="removerUltimoValor()" class="principal">Remover Último Valor</button>
         

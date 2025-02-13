@@ -17,7 +17,7 @@ body {
     height: 100%;
 }
 
-input[type="number"] {
+input[type="text"] {
     padding: 10px;
     margin: 10px 0;
     width: calc(100% - 22px);
@@ -43,8 +43,8 @@ button.pequeno {
     border-radius: 5px;
 }
 
-button:hover {
-    background-color: #0056b3;
+button.principal:active {
+    background-color: #001a8f; /* Cor temporária quando o botão é pressionado */
 }
 
 p {

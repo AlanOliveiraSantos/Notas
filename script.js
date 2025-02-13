@@ -13,10 +13,16 @@ request.onsuccess = function(event) {
     atualizarDisplay();
 };
 
+function formatarMoeda(input) {
+    let valor = input.value.replace(/\D/g, ''); // Remove tudo que não for número
+    valor = (parseFloat(valor) / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    input.value = valor;
+}
+
 function registrarValor() {
     const valorInput = document.getElementById('valorInput');
-    const valor = parseFloat(valorInput.value);
-
+    const valor = parseFloat(valorInput.value.replace(/\D/g, '')) / 100; // Converte para número
+    
     if (!isNaN(valor)) {
         const transaction = db.transaction(['valores'], 'readwrite');
         const objectStore = transaction.objectStore('valores');
@@ -28,6 +34,7 @@ function registrarValor() {
         };
     }
 }
+
 
 function atualizarDisplay() {
     const transaction = db.transaction(['valores'], 'readonly');
