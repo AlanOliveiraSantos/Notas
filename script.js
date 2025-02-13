@@ -131,8 +131,9 @@ function atualizarBarraProgresso(total) {
 
 function atualizarLista(valores) {
     const listaValores = document.getElementById('listaValores');
-    listaValores.innerHTML = '';
+    listaValores.innerHTML = ''; // Limpa a lista antes de adicionar os novos itens
 
+    // Não inverter a lista, apenas numerar de forma crescente
     valores.forEach((item, index) => {
         const li = document.createElement('li');
 
@@ -142,10 +143,12 @@ function atualizarLista(valores) {
         // Formata a data para o formato BR (DD/MM/YYYY)
         const dataFormatada = new Date(item.data).toLocaleDateString('pt-BR');
 
+        // Adiciona a numeração de forma crescente
         li.textContent = `${index + 1} | ${valorFormatado} | ${dataFormatada}`;
         listaValores.appendChild(li);
     });
 }
+
 
 
 function removerUltimoValor() {
@@ -165,7 +168,6 @@ function removerUltimoValor() {
         }
     };
 }
-
 
 
 function resetarValores() {
