@@ -29,16 +29,17 @@ document.getElementById('valorInput').addEventListener('input', function (e) {
 function registrarValor() {
     const valorInput = document.getElementById('valorInput');
     const dataInput = document.getElementById('dataInput');
-    
-    // Remove qualquer coisa não numérica e transforma em valor numérico
-    const valor = parseFloat(valorInput.value.replace(/\D/g, '')) / 100; // Divide por 100 para obter o valor correto
-    const data = dataInput.value; // Obtém o valor da data no formato YYYY-MM-DD
+    const valor = parseFloat(valorInput.value.replace(/\D/g, '')); // Remove a formatação da moeda
+    const data = dataInput.value.replace(/\D/g, ''); // Remove as barras
 
-    // Verificar se o valor é um número válido e se a data não está vazia
-    if (!isNaN(valor) && data !== "") {
+    // Verifica se a data tem 8 caracteres e o valor é um número válido
+    if (!isNaN(valor) && data.length === 8) {
+        // Formata a data para o formato YYYY-MM-DD
+        const dataFormatada = `${data.slice(4, 8)}-${data.slice(2, 4)}-${data.slice(0, 2)}`;
+
         const transaction = db.transaction(['valores'], 'readwrite');
         const objectStore = transaction.objectStore('valores');
-        objectStore.add({ valor: valor, data: data });
+        objectStore.add({ valor: valor / 100, data: dataFormatada }); // Divide o valor por 100 para armazená-lo em centavos
 
         // Limpa os campos após o envio
         valorInput.value = '';
@@ -48,9 +49,43 @@ function registrarValor() {
             atualizarDisplay();
         };
     } else {
-        alert("Por favor, insira um valor válido e uma data.");
+        alert("Por favor, insira um valor válido e uma data no formato DD/MM/YYYY.");
     }
 }
+
+
+function validarData(data) {
+    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = data.match(regex);
+    if (!match) return false;
+
+    const dia = parseInt(match[1], 10);
+    const mes = parseInt(match[2], 10) - 1; // Meses começam em 0 (Janeiro)
+    const ano = parseInt(match[3], 10);
+    
+    const dataValida = new Date(ano, mes, dia);
+    return dataValida.getDate() === dia && dataValida.getMonth() === mes && dataValida.getFullYear() === ano;
+}
+
+document.getElementById('dataInput').addEventListener('input', function (e) {
+    let data = e.target.value.replace(/\D/g, ''); // Remove tudo que não for número
+
+    // Adiciona as barras automaticamente, mas só após a quantidade de números adequada
+    if (data.length <= 2) {
+        // Adiciona a barra após o dia
+        data = data.slice(0, 2);
+    } else if (data.length <= 4) {
+        // Adiciona a barra após o mês
+        data = data.slice(0, 2) + '/' + data.slice(2, 4);
+    } else if (data.length <= 8) {
+        // Não remove as barras, apenas adiciona o ano
+        data = data.slice(0, 2) + '/' + data.slice(2, 4) + '/' + data.slice(4, 8);
+    }
+
+    e.target.value = data; // Atualiza o valor do input com a data formatada
+});
+
+
 
 function atualizarDisplay() {
     const transaction = db.transaction(['valores'], 'readonly');
