@@ -38,7 +38,9 @@ function atualizarDisplay() {
         const valores = event.target.result;
         const total = valores.reduce((acc, item) => acc + item.valor, 0);
         const totalDisplay = document.getElementById('totalDisplay');
-        totalDisplay.textContent = `Total: ${total}`;
+
+        // Formata o total para reais
+        totalDisplay.textContent = `Total: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
 
         atualizarBarraProgresso(total);
         atualizarLista(valores);
@@ -59,9 +61,11 @@ function atualizarLista(valores) {
     const listaValores = document.getElementById('listaValores');
     listaValores.innerHTML = '';
 
-    valores.forEach(item => {
+    valores.forEach((item, index) => {
         const li = document.createElement('li');
-        li.textContent = item.valor;
+
+        // Formata cada valor para reais
+        li.textContent = `${index + 1} | ${item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
         listaValores.appendChild(li);
     });
 }
@@ -87,5 +91,21 @@ function deletarBancoDeDados() {
 
     request.onerror = function(event) {
         console.error('Erro ao deletar o banco de dados:', event.target.errorCode);
+    };
+}
+
+function removerUltimoValor() {
+    const transaction = db.transaction(['valores'], 'readwrite');
+    const objectStore = transaction.objectStore('valores');
+    const request = objectStore.openCursor(null, 'prev'); // Pega o último item
+
+    request.onsuccess = function(event) {
+        const cursor = event.target.result;
+        if (cursor) {
+            objectStore.delete(cursor.primaryKey); // Remove apenas o último valor armazenado
+            transaction.oncomplete = function() {
+                atualizarDisplay();
+            };
+        }
     };
 }

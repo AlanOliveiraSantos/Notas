@@ -4,16 +4,17 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
-    margin: 1;
+    background-color: #ffffff;
+    margin: 0;
 }
 
 .container {
-    background-color: #fff;
+    background-color: #fbfbfb;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    height: 100%;
 }
 
 input[type="number"] {
@@ -23,14 +24,23 @@ input[type="number"] {
     font-size: 16px;
 }
 
-button {
+button.principal {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #007bff;
-    color: #fff;
+    background-color: #00c882;
+    color: #000000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin: 5px;
+}
+
+button.pequeno {
+    padding: 5px 10px;
+    color: rgb(255, 255, 255);
+    background-color: brown;
+    border: none;
+    border-radius: 5px;
 }
 
 button:hover {
@@ -38,9 +48,28 @@ button:hover {
 }
 
 p {
-    font-size: 18px;
+    font-size: 17px;
+    font-weight: bold;
+}
+ul {
+    list-style-type: none;
+    margin: 10px 0;
+    padding: 0;
+    font-size: 16px;
 }
 
+ul li {
+    display: flex;
+    justify-content: space-between; /* Alinha os itens */
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd; /* Linha para separar os itens */
+    font-size: 16px;
+    font-weight:bolder;
+}
+
+ul li:last-child {
+    border-bottom: none; /* Remove a borda do último item */
+}
 .barra-container {
     width: 100%;
     background-color: #e0e0e0;
@@ -50,7 +79,8 @@ p {
 
 .barra-progresso {
     height: 30px;
-    background-color: #76c7c0;
+    background-color: #0077ff;
     width: 0;
     border-radius: 5px;
+    max-width: 100%;
 }

@@ -8,18 +8,22 @@
 </head>
 <body>
     <div class="container">
-        <h1>Registro de Valores Diários</h1>
+        <h1>Registrar Notas</h1>
         <input type="number" id="valorInput" placeholder="Digite um valor">
-        <button onclick="registrarValor()">Registrar Valor</button>
-        <button onclick="resetarValores()">Resetar Valores</button>
-        <button onclick="deletarBancoDeDados()">Deletar Banco de Dados</button>
+        <button onclick="registrarValor()" class="principal">Registrar Valor</button>
+        <button onclick="removerUltimoValor()" class="principal">Remover Último Valor</button>
+        
         <p id="totalDisplay">Total: 0</p>
-        <p id="totalDisplay">Maximo: 81000</p>
+        <p id="totalDisplay">Máximo: 81000</p>
         <div class="barra-container">
             <div id="barraProgresso" class="barra-progresso"></div>
         </div>
         <ul id="listaValores"></ul>
+        <p>Área de Exclusão</p>
+        <button onclick="resetarValores()" class="pequeno">Resetar Valores</button>
+        <button onclick="deletarBancoDeDados()" class="pequeno">Deletar Banco de Dados</button>
     </div>
+    
     <script src="script.js"></script>
 </body>
 </html>
